@@ -1,15 +1,23 @@
-
-import React, { useState } from "react";
-import AddTodoForm from "./AddTodoForm";
+import React, { useState } from 'react';
+import AddTodoForm from './AddTodoForm';
 
 const TodoList = () => {
-  const [todos, setTodos] = useState([
-    { id: 1, text: "Learn React", completed: false },
-    { id: 2, text: "Build a Todo App", completed: false }
-  ]);
+  // Initial todos for demonstration
+  const initialTodos = [
+    { id: 1, text: 'Learn React', completed: false },
+    { id: 2, text: 'Build a Todo App', completed: true },
+    { id: 3, text: 'Write Tests', completed: false },
+  ];
+
+  const [todos, setTodos] = useState(initialTodos);
 
   const addTodo = (text) => {
-    setTodos([...todos, { id: Date.now(), text, completed: false }]);
+    const newTodo = {
+      id: Date.now(),
+      text,
+      completed: false,
+    };
+    setTodos([...todos, newTodo]);
   };
 
   const toggleTodo = (id) => {
@@ -25,30 +33,30 @@ const TodoList = () => {
   };
 
   return (
-    <div>
-      <h2>Todo List</h2>
-      <AddTodoForm addTodo={addTodo} />
-
-      <ul>
+    <div className="todo-list">
+      <h1>Todo List</h1>
+      <AddTodoForm onAddTodo={addTodo} />
+      <ul className="todo-items">
         {todos.map((todo) => (
           <li
             key={todo.id}
-            data-testid="todo-item"
-            onClick={() => toggleTodo(todo.id)}
-            style={{
-              cursor: "pointer",
-              textDecoration: todo.completed ? "line-through" : "none"
-            }}
+            className={`todo-item ${todo.completed ? 'completed' : ''}`}
           >
-            {todo.text}
-            <button
-              data-testid="delete-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteTodo(todo.id);
+            <span
+              onClick={() => toggleTodo(todo.id)}
+              style={{
+                textDecoration: todo.completed ? 'line-through' : 'none',
+                cursor: 'pointer',
               }}
             >
-              X
+              {todo.text}
+            </span>
+            <button
+              onClick={() => deleteTodo(todo.id)}
+              className="delete-btn"
+              aria-label={`Delete ${todo.text}`}
+            >
+              Delete
             </button>
           </li>
         ))}
